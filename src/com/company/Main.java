@@ -15,7 +15,7 @@ final class Main {
       //  ComLineParser parser = new ComLineParser(keys);
        // parser.parse(args);
 
-        ComLineParser p = new ComLineParser(keys);
+        ComLineParserBase p = new SimpleParser(keys);
        p.parse(new String[]{"-wInFileName", "-?OutFileName"});
 
 
