@@ -45,45 +45,45 @@ abstract public class ComLineParserBase {
 
 
     protected SwitchStatus onSwitch(String key, String keyValue) {
+//        System.out.println("Key =" + key);
+//        System.out.println("keyValue = " + keyValue);
         return status;
     }
 
-    public boolean parse(String[] args) {
-        SwitchStatus status = SwitchStatus.NoError;
+    protected SwitchStatus parse(String[] args) {
+        SwitchStatus ss = SwitchStatus.NoError;
         int argNum;
-        for (argNum = 0; (status == SwitchStatus.NoError) && (argNum < args.length); argNum++) {
-            // провера наличия правильного разделителя
-            boolean isDelimeter = false;
-            for (int n = 0; !isDelimeter && (n < delimeters.length); n++) {
-                isDelimeter = args[argNum].regionMatches(0,delimeters[n], 0, 1);
+        for ( argNum = 0; (ss == SwitchStatus.NoError) && (argNum < args.length); argNum++) {
+            boolean isDelimiter = false;
+            for (int n = 0; !isDelimiter && (n < delimeters.length); n++) {
+                isDelimiter = delimeters[n].regionMatches(0, args[argNum], 0, 1);
             }
-            if (isDelimeter) {
-                // проверка наличия правильного ключа
-                boolean isKey = false;
-                int i;
-                for (i = 0; !isKey && (i < keys.length); i++) {
-                    isKey = args[argNum].toUpperCase().regionMatches(1, 
-                            keys[i].toUpperCase(),0,keys[i].length());
-                    if (isKey) break;
+            if (isDelimiter) {
+                boolean isKey=false;
+                for (int i = 0; !isKey && (i < keys.length); i++) {
+                    isKey = keys[i].regionMatches(0, args[argNum], 1, 1);
                 }
-                if (!isKey) {
-                    status = SwitchStatus.Error;
-                    break;
-                } 
+                if (isKey){
+                    ss=SwitchStatus.NoError;
+                   // System.out.println(args[argNum ]+  "////");
+                    onSwitch(args[argNum].substring(1,2),args[argNum].substring(2));
+                }
                 else {
-                    status= onSwitch(keys[i].toLowerCase(),
-                         args[argNum].substring(1 + keys[i].length()));
+                    ss=SwitchStatus.Error;
+                    break;
                 }
             }
             else {
-                status= SwitchStatus.Error;
+                ss = SwitchStatus.Error;
                 break;
             }
         }
-        // завершение разбора командной строки
-        if (status == SwitchStatus.ShowUsage)    onUsage(null);
-        if (status == SwitchStatus.Error)        onUsage((argNum == args.length) ? null : args[argNum]);
-        
-        return status == SwitchStatus.NoError;
+
+        if (ss == SwitchStatus.ShowUsage)    onUsage(null);
+        if (ss == SwitchStatus.Error) {
+            onUsage((argNum == args.length) ? null : args[argNum]);
+            ss=SwitchStatus.NoError;
+        }
+        return ss;
     }      
 }
