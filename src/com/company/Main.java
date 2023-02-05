@@ -10,17 +10,16 @@ final class Main {
 
     public static void main(String[] args) throws IOException {
 
-
         String[] keys = {"r", "t", "?", "w"};
       //  ComLineParser parser = new ComLineParser(keys);
        // parser.parse(args);
-
-        ComLineParserBase p = new SimpleParser(keys);
+       ComLineParserBase p = new SimpleParser(keys);
        p.parse(new String[]{"-rInFileName", "-wOutFileName"});
 
 
 
     }
+
 
 
 
